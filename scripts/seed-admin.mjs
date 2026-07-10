@@ -28,7 +28,7 @@ const passwordHash = await bcrypt.hash(password, 12);
 await User.findOneAndUpdate(
   { email },
   { name, email, passwordHash, role: "admin" },
-  { upsert: true, new: true, runValidators: true }
+  { upsert: true, returnDocument: "after", runValidators: true }
 );
 
 console.log(`Admin account ready: ${email}`);
