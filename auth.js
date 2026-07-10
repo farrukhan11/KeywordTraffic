@@ -5,6 +5,44 @@ import { z } from "zod";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 
+const credentialsSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(6),
+});
+
+async function getOrCreateAdmin(email, password) {
+  const adminEmail = process.env.ADMIN_EMAIL?.toLowerCase().trim();
+  const adminPassword = process.env.ADMIN_PASSWORD;
+
+  if (!adminEmail || !adminPassword) return null;
+  if (email !== adminEmail || password !== adminPassword) return null;
+
+  let user = await User.findOne({ email: adminEmail });
+  const passwordHash = await bcrypt.hash(adminPassword, 12);
+
+  if (!user) {
+    user = await User.create({
+      name: process.env.ADMIN_NAME || "Admin",
+      email: adminEmail,
+      passwordHash,
+      role: "admin",
+    });
+  } else {
+    let changed = false;
+    if (user.role !== "admin") {
+      user.role = "admin";
+      changed = true;
+    }
+    if (!(await bcrypt.compare(adminPassword, user.passwordHash))) {
+      user.passwordHash = passwordHash;
+      changed = true;
+    }
+    if (changed) await user.save();
+  }
+
+  return user;
+}
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   session: { strategy: "jwt" },
   pages: { signIn: "/login" },
@@ -12,11 +50,21 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Credentials({
       credentials: { email: {}, password: {} },
       async authorize(credentials) {
-        const parsed = z.object({ email: z.string().email(), password: z.string().min(6) }).safeParse(credentials);
+        const parsed = credentialsSchema.safeParse(credentials);
         if (!parsed.success) return null;
+
+        const email = parsed.data.email.toLowerCase().trim();
+        const password = parsed.data.password;
+
         await connectDB();
-        const user = await User.findOne({ email: parsed.data.email.toLowerCase() });
-        if (!user || !(await bcrypt.compare(parsed.data.password, user.passwordHash))) return null;
+
+        let user = await User.findOne({ email });
+        if (!user) user = await getOrCreateAdmin(email, password);
+        if (!user) return null;
+
+        const validPassword = await bcrypt.compare(password, user.passwordHash);
+        if (!validPassword) return null;
+
         return {
           id: user._id.toString(),
           name: user.name || user.email,
