@@ -1,6 +1,6 @@
 {
-  "name": "keyword-research-platform",
-  "version": "0.1.0",
+  "name": "keyword-traffic",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,22 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@firebase/auth": "^1.13.3",
-    "@firebase/firestore": "^4.16.0",
-    "@headlessui/react": "^2.2.10",
-    "@heroicons/react": "^2.2.0",
-    "@types/mongodb": "^4.0.6",
-    "@types/mongoose": "^5.11.96",
-    "firebase": "^12.15.0",
-    "firebase-admin": "^14.1.0",
-    "google-ads": "^0.0.3",
+    "bcryptjs": "^3.0.2",
     "mongoose": "^9.7.4",
     "next": "16.2.10",
-    "papaparse": "^5.5.4",
+    "next-auth": "^5.0.0-beta.29",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "react-hook-form": "^7.81.0",
-    "server-only": "^0.0.1",
     "zod": "^4.4.3"
   },
   "devDependencies": {

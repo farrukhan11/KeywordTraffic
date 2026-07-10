@@ -1,53 +1,34 @@
-import { requireAuth } from '@/lib/auth';
-import { connectToDatabase } from '@/lib/mongodb';
-import KeywordProject from '@/models/KeywordProject';
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { auth } from "@/auth";
+import { connectDB } from "@/lib/mongodb";
+import Project from "@/models/Project";
 
-export async function GET(request) {
-  const authResult = await requireAuth(request);
-  if (authResult.error) {
-    return Response.json({ error: authResult.error.message }, { status: authResult.error.status });
-  }
+const schema = z.object({
+  name: z.string().min(2).max(150),
+  country: z.string().min(2),
+  language: z.string().min(2),
+  keywords: z.array(z.string().min(1)).max(5000),
+});
 
-  try {
-    await connectToDatabase();
-    const projects = await KeywordProject.find({ userId: authResult.user.uid })
-      .sort({ createdAt: -1 })
-      .select('-metricsLock');
-    return Response.json({ projects });
-  } catch (error) {
-    return Response.json({ error: 'Failed to fetch projects' }, { status: 500 });
-  }
+export async function GET() {
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  await connectDB();
+  const projects = await Project.find({ userId: session.user.id }).sort({ createdAt: -1 }).lean();
+  return NextResponse.json({ projects });
 }
 
 export async function POST(request) {
-  const authResult = await requireAuth(request);
-  if (authResult.error) {
-    return Response.json({ error: authResult.error.message }, { status: authResult.error.status });
-  }
-
+  const session = await auth();
+  if (!session?.user?.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
-    const body = await request.json();
-    const { name, description, country, countryName, language, languageName, network } = body;
-
-    if (!name || !country || !countryName || !language || !languageName || !network) {
-      return Response.json({ error: 'Missing required fields' }, { status: 400 });
-    }
-
-    await connectToDatabase();
-    const project = await KeywordProject.create({
-      userId: authResult.user.uid,
-      name,
-      description: description || '',
-      targetCountryCode: country,
-      targetCountryName: countryName,
-      languageCode: language,
-      languageName: languageName,
-      network,
-      status: 'DRAFT',
-    });
-
-    return Response.json({ project }, { status: 201 });
+    const data = schema.parse(await request.json());
+    const keywords = [...new Set(data.keywords.map(k => k.trim().toLowerCase()).filter(Boolean))];
+    await connectDB();
+    const project = await Project.create({ ...data, keywords, userId: session.user.id, status: keywords.length ? "READY" : "DRAFT" });
+    return NextResponse.json({ project }, { status: 201 });
   } catch (error) {
-    return Response.json({ error: 'Failed to create project' }, { status: 500 });
+    return NextResponse.json({ error: error?.issues?.[0]?.message || "Unable to create project" }, { status: 400 });
   }
 }
