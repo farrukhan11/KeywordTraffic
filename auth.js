@@ -28,16 +28,13 @@ async function getOrCreateAdmin(email, password) {
       role: "admin",
     });
   } else {
-    let changed = false;
-    if (user.role !== "admin") {
-      user.role = "admin";
-      changed = true;
-    }
-    if (!(await bcrypt.compare(adminPassword, user.passwordHash))) {
-      user.passwordHash = passwordHash;
-      changed = true;
-    }
-    if (changed) await user.save();
+    user.name = process.env.ADMIN_NAME || user.name || "Admin";
+    user.role = "admin";
+
+    const passwordMatches = await bcrypt.compare(adminPassword, user.passwordHash);
+    if (!passwordMatches) user.passwordHash = passwordHash;
+
+    await user.save();
   }
 
   return user;
@@ -58,12 +55,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         await connectDB();
 
-        let user = await User.findOne({ email });
-        if (!user) user = await getOrCreateAdmin(email, password);
-        if (!user) return null;
+        // Always check configured admin credentials first. This also repairs an
+        // existing account that was previously created with another password.
+        let user = await getOrCreateAdmin(email, password);
 
-        const validPassword = await bcrypt.compare(password, user.passwordHash);
-        if (!validPassword) return null;
+        if (!user) {
+          user = await User.findOne({ email });
+          if (!user) return null;
+
+          const validPassword = await bcrypt.compare(password, user.passwordHash);
+          if (!validPassword) return null;
+        }
 
         return {
           id: user._id.toString(),
