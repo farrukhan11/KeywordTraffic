@@ -17,12 +17,27 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         await connectDB();
         const user = await User.findOne({ email: parsed.data.email.toLowerCase() });
         if (!user || !(await bcrypt.compare(parsed.data.password, user.passwordHash))) return null;
-        return { id: user._id.toString(), name: user.name || user.email, email: user.email };
+        return {
+          id: user._id.toString(),
+          name: user.name || user.email,
+          email: user.email,
+          role: user.role || "user",
+        };
       },
     }),
   ],
   callbacks: {
-    jwt({ token, user }) { if (user?.id) token.userId = user.id; return token; },
-    session({ session, token }) { if (session.user) session.user.id = token.userId; return session; },
+    jwt({ token, user }) {
+      if (user?.id) token.userId = user.id;
+      if (user?.role) token.role = user.role;
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.userId;
+        session.user.role = token.role || "user";
+      }
+      return session;
+    },
   },
 });
