@@ -26,6 +26,7 @@ export default async function Dashboard({ searchParams }) {
   ]);
   const params = await searchParams;
   const googleAdsStatus = params?.googleAds;
+  const googleAdsReason = params?.reason ? decodeURIComponent(String(params.reason)) : "";
   const keywordCount = projects.reduce((total, project) => total + (project.keywords?.length || 0), 0);
   const readyCount = projects.filter((project) => project.status === "READY").length;
   const completedCount = projects.filter((project) => project.status === "COMPLETED").length;
@@ -51,7 +52,12 @@ export default async function Dashboard({ searchParams }) {
 
       <section className="mx-auto max-w-7xl px-6 py-10">
         {googleAdsStatus === "connected" && <div className="mb-6 rounded-2xl border border-emerald-400/20 bg-emerald-400/10 p-4 text-emerald-200">Google Ads successfully connected.</div>}
-        {(googleAdsStatus === "error" || googleAdsStatus === "invalid-state") && <div className="mb-6 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-red-200">Google Ads connection failed. Check the OAuth redirect URI and environment values, then reconnect.</div>}
+        {(googleAdsStatus === "error" || googleAdsStatus === "invalid-state") && (
+          <div className="mb-6 rounded-2xl border border-red-400/20 bg-red-400/10 p-4 text-red-200">
+            <div className="font-bold">Google Ads connection failed.</div>
+            <div className="mt-1 text-sm">{googleAdsReason || (googleAdsStatus === "invalid-state" ? "OAuth state validation failed. Start the connection again from this dashboard." : "Check the OAuth redirect URI and environment values, then reconnect.")}</div>
+          </div>
+        )}
 
         <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
           <div>
