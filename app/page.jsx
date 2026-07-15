@@ -1,5 +1,6 @@
 import Link from "next/link";
 import SiteFooter from "./components/SiteFooter";
+import SiteHeader from "./components/SiteHeader";
 
 const workflow = [
   {
@@ -25,28 +26,7 @@ const demoKeywords = [
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col bg-slate-950 text-white">
-      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6">
-        <Link href="/">
-          <img src="/Coupon-tech-black.jpg" alt="Coupon Tech Logo" className="h-8 w-auto" />
-        </Link>
-        <div className="flex items-center gap-1 sm:gap-2">
-          <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white md:block" href="/privacy">
-            Privacy
-          </Link>
-          <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white md:block" href="/terms">
-            Terms
-          </Link>
-          <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white md:block" href="/contact">
-            Contact
-          </Link>
-          <Link className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white sm:px-4" href="/login">
-            Login
-          </Link>
-          <Link className="rounded-lg bg-indigo-500 px-3 py-2 text-sm font-semibold hover:bg-indigo-400 sm:px-4" href="/register">
-            Get started
-          </Link>
-        </div>
-      </nav>
+      <SiteHeader />
 
       <section className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
         <div>
