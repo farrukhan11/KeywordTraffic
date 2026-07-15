@@ -24,25 +24,31 @@ const demoKeywords = [
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+    <main className="flex min-h-screen flex-col bg-slate-950 text-white">
+      <nav className="mx-auto flex w-full max-w-7xl items-center justify-between px-6 py-6">
         <Link href="/">
           <img src="/Coupon-tech-black.jpg" alt="Coupon Tech Logo" className="h-8 w-auto" />
         </Link>
-        <div className="flex items-center gap-2 sm:gap-3">
-          <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white sm:block" href="/privacy">
+        <div className="flex items-center gap-1 sm:gap-2">
+          <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white md:block" href="/privacy">
             Privacy
           </Link>
-          <Link className="rounded-lg px-4 py-2 text-slate-300 hover:text-white" href="/login">
+          <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white md:block" href="/terms">
+            Terms
+          </Link>
+          <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white md:block" href="/contact">
+            Contact
+          </Link>
+          <Link className="rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white sm:px-4" href="/login">
             Login
           </Link>
-          <Link className="rounded-lg bg-indigo-500 px-4 py-2 font-semibold hover:bg-indigo-400" href="/register">
+          <Link className="rounded-lg bg-indigo-500 px-3 py-2 text-sm font-semibold hover:bg-indigo-400 sm:px-4" href="/register">
             Get started
           </Link>
         </div>
       </nav>
 
-      <section className="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
+      <section className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center lg:py-28">
         <div>
           <span className="rounded-full border border-indigo-400/30 bg-indigo-400/10 px-3 py-1 text-sm text-indigo-200">
             Internal keyword research and campaign planning
@@ -103,7 +109,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto grid max-w-7xl gap-8 px-6 py-20 lg:grid-cols-2">
+      <section className="mx-auto grid w-full max-w-7xl gap-8 px-6 py-20 lg:grid-cols-2">
         <div className="rounded-3xl border border-slate-800 bg-slate-900 p-8">
           <h2 className="text-2xl font-bold">Designed for authorized internal users</h2>
           <p className="mt-4 leading-8 text-slate-300">
