@@ -43,7 +43,7 @@ export default async function Dashboard({ searchParams }) {
       <header className="border-b border-white/10 bg-[#080d17]/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <Link href="/dashboard">
-            <img src="/Coupon-tech.png" alt="Coupon Tech Logo" className="h-8 w-auto" />
+            <img src="/Coupon-tech-black.jpg" alt="Coupon Tech Logo" className="h-8 w-auto" />
           </Link>
           <SignOutButton />
         </div>
