@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/mongodb";
 import Project from "@/models/Project";
 import GoogleAdsConnection from "@/models/GoogleAdsConnection";
 import SignOutButton from "@/components/SignOutButton";
+import QuickKeywordSearch from "@/components/QuickKeywordSearch";
 
 const statusStyles = {
   READY: "border-cyan-400/20 bg-cyan-400/10 text-cyan-300",
@@ -60,6 +61,8 @@ export default async function Dashboard({ searchParams }) {
           </div>
           <Link href="/dashboard/projects/new" className="rounded-xl bg-cyan-400 px-5 py-3 text-center font-black text-slate-950 shadow-lg shadow-cyan-950/30 hover:bg-cyan-300">Upload keywords</Link>
         </div>
+
+        <QuickKeywordSearch />
 
         <div className="mt-9 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {stats.map((stat) => <article key={stat.label} className="rounded-2xl border border-white/10 bg-[#0d1422] p-6 shadow-xl shadow-black/10"><div className="text-sm font-semibold text-slate-400">{stat.label}</div><div className="mt-3 text-4xl font-black">{stat.value.toLocaleString()}</div><div className="mt-3 text-xs text-slate-600">{stat.helper}</div></article>)}
