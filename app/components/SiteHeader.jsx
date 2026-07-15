@@ -12,7 +12,7 @@ export default function SiteHeader() {
     <header className="border-b border-slate-800/80 bg-slate-950/95 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5">
         <Link className="shrink-0" href="/" aria-label="Coupon Tech home">
-          <img src="/Coupon-tech.png" alt="Coupon Tech Logo" className="h-8 w-auto" />
+          <img src="/Coupon-tech-black.jpg" alt="Coupon Tech Logo" className="h-8 w-auto" />
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Public navigation">
