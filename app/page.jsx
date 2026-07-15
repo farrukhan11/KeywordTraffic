@@ -26,8 +26,8 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
-        <Link className="text-xl font-bold" href="/">
-          Keyword Traffic
+        <Link href="/">
+          <img src="/Coupon-tech.png" alt="Coupon Tech Logo" className="h-8 w-auto" />
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
           <Link className="hidden rounded-lg px-3 py-2 text-sm text-slate-300 hover:text-white sm:block" href="/privacy">

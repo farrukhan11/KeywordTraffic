@@ -42,10 +42,9 @@ export default async function Dashboard({ searchParams }) {
     <main className="min-h-screen bg-[#060a12] text-white">
       <header className="border-b border-white/10 bg-[#080d17]/90 backdrop-blur">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <div>
-            <div className="text-xl font-black tracking-tight">Keyword Traffic</div>
-            <div className="mt-1 text-sm text-slate-500">{session.user.email}</div>
-          </div>
+          <Link href="/dashboard">
+            <img src="/Coupon-tech.png" alt="Coupon Tech Logo" className="h-8 w-auto" />
+          </Link>
           <SignOutButton />
         </div>
       </header>
