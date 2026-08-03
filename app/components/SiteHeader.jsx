@@ -13,7 +13,6 @@ export default function SiteHeader() {
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-5">
         <Link className="flex shrink-0 items-center gap-3" href="/" aria-label="Keyword Traffic by Coupon Tech home">
           <img src="/Coupon-tech-black.jpg" alt="Coupon Tech" className="h-14 w-auto sm:h-16" />
-          <span className="hidden border-l border-slate-700 pl-3 text-sm font-bold text-white xl:block">Keyword Traffic</span>
         </Link>
 
         <nav className="hidden items-center gap-1 lg:flex" aria-label="Public navigation">

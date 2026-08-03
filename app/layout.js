@@ -3,7 +3,7 @@ import "./globals.css";
 export const metadata = {
   metadataBase: new URL("https://coupon-tech.com"),
   title: {
-    default: "Keyword Traffic – Bulk Google Ads Keyword Research",
+    default: "Coupon Tech – Bulk Google Ads Keyword Research",
     template: "%s | Keyword Traffic",
   },
   description:
