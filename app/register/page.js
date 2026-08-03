@@ -39,7 +39,7 @@ export default function RegisterPage() {
       <main className="flex flex-1 items-center justify-center p-6">
         <form onSubmit={submit} className="w-full max-w-md rounded-3xl bg-white p-8 shadow-xl">
           <h1 className="text-3xl font-bold text-slate-950">Create account</h1>
-          <p className="mt-2 text-slate-500">MongoDB-backed account with secure password hashing.</p>
+          <p className="mt-2 text-slate-500">Securely store your account with secure password hashing.</p>
 
           {error && <p className="mt-4 rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
 

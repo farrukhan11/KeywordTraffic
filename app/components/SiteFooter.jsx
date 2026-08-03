@@ -17,7 +17,7 @@ export default function SiteFooter() {
           <div>
             <Link className="inline-flex items-center gap-3 text-xl font-black text-white" href="/">
               <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500 text-sm">KT</span>
-              Keyword Traffic
+              Coupon Tech
             </Link>
             <p className="mt-4 max-w-2xl text-sm leading-7 text-slate-300">
               An internal keyword research and Google Ads campaign-planning platform for organizing bulk keyword lists and authorized historical metrics.

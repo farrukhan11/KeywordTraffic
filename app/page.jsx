@@ -52,7 +52,7 @@ export default function Home() {
             Keyword research by Coupon Tech
           </span>
           <h1 className="mt-6 text-5xl font-black leading-tight sm:text-6xl lg:text-7xl">
-            Coupon Tech – Bulk Google Ads Keyword Research
+            Coupon Tech
           </h1>
           <p className="mt-4 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl">
             Search keywords, compare demand, and plan smarter campaigns.
