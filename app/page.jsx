@@ -52,7 +52,7 @@ export default function Home() {
             Keyword research by Coupon Tech
           </span>
           <h1 className="mt-6 text-5xl font-black leading-tight sm:text-6xl lg:text-7xl">
-            Keyword Traffic
+            Coupon Tech – Bulk Google Ads Keyword Research
           </h1>
           <p className="mt-4 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl">
             Search keywords, compare demand, and plan smarter campaigns.
@@ -102,7 +102,7 @@ export default function Home() {
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-300">Historical keyword data</p>
             <h2 className="mt-4 text-3xl font-black sm:text-4xl">The search insights you need, without the noise</h2>
             <p className="mt-5 text-lg leading-8 text-slate-300">
-              Keyword Traffic turns your keyword list into useful research metrics for SEO research and advertising campaign planning. It does not generate website traffic or create, edit, or launch advertising campaigns.
+              Coupon Tech helps authorized team members turn keyword lists into useful research metrics for SEO research and advertising campaign planning. It does not generate website traffic or create, edit, or launch advertising campaigns.
             </p>
             <p className="mt-5 rounded-2xl border border-indigo-400/30 bg-indigo-400/10 px-5 py-4 text-base font-semibold leading-7 text-indigo-100">
               Google Ads connection is used only to retrieve historical metrics for the keywords you submit.
