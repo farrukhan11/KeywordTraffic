@@ -4,29 +4,29 @@ import SiteHeader from "./components/SiteHeader";
 
 const workflow = [
   {
-    title: "Create a project",
-    description: "Organize keyword research by store, market, campaign, or client project.",
+    title: "Enter or upload keywords",
+    description: "Search a few keywords instantly or upload a larger CSV or Excel list for bulk research.",
   },
   {
-    title: "Upload keywords in bulk",
-    description: "Paste or upload keyword lists, normalize entries, and remove duplicates before processing.",
+    title: "Choose your market",
+    description: "Select the country and language you want to research so every search matches your target audience.",
   },
   {
-    title: "Review planning metrics",
-    description: "Use authorized Google Ads historical metrics for campaign research, comparison, and export.",
+    title: "Compare keyword metrics",
+    description: "Review monthly searches, competition, competition index, and bid ranges to identify useful keywords.",
   },
 ];
 
 const dataUse = [
   {
-    title: "What we access",
+    title: "Metrics we retrieve",
     description:
-      "After you choose to connect Google Ads, Keyword Traffic accesses the authorized account identifiers and keyword-planning historical metrics needed for your request.",
+      "After you connect Google Ads, we retrieve historical metrics only for the keywords you choose to search.",
   },
   {
-    title: "Why we access it",
+    title: "How we use the data",
     description:
-      "The data is used to display search volume, competition, and bid-range insights inside your private keyword research projects.",
+      "We display average monthly searches, competition, competition index, and bid ranges inside your keyword research workspace.",
   },
   {
     title: "Your control",
@@ -36,9 +36,9 @@ const dataUse = [
 ];
 
 const demoKeywords = [
-  ["running shoes discount", "12,100"],
-  ["sportswear voucher", "8,100"],
-  ["fashion promo code", "5,400"],
+  ["running shoes", "12,100"],
+  ["sportswear deals", "8,100"],
+  ["fashion discount codes", "5,400"],
 ];
 
 export default function Home() {
@@ -49,16 +49,16 @@ export default function Home() {
       <section className="mx-auto grid w-full max-w-7xl gap-12 px-6 py-16 sm:py-20 lg:grid-cols-2 lg:items-center lg:py-28">
         <div>
           <span className="rounded-full border border-indigo-400/30 bg-indigo-400/10 px-3 py-1 text-sm text-indigo-200">
-            Keyword Traffic by Coupon Tech
+            Keyword research by Coupon Tech
           </span>
           <h1 className="mt-6 text-5xl font-black leading-tight sm:text-6xl lg:text-7xl">
             Keyword Traffic
           </h1>
           <p className="mt-4 max-w-2xl text-2xl font-bold leading-tight text-white sm:text-3xl">
-            Bulk keyword research and advertising campaign planning, in one workspace.
+            Search keywords, compare demand, and plan smarter campaigns.
           </p>
           <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            Create research projects, upload or paste keyword lists, remove duplicates, and review authorized Google Ads historical metrics such as average monthly searches, competition, and bid ranges.
+            Search individual keywords or upload lists in bulk. Choose a country and language, then review historical monthly searches, competition, competition index, and top-of-page bid ranges in one workspace.
           </p>
           <div className="mt-8 flex flex-wrap gap-4">
             <Link className="rounded-xl bg-indigo-500 px-6 py-3 font-bold hover:bg-indigo-400" href="/register">
@@ -69,7 +69,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="mt-5 max-w-2xl text-sm leading-6 text-slate-400">
-            Google Ads access is optional and begins only after you authorize an eligible account through Google OAuth. Learn how we use and protect data in our{" "}
+            Historical keyword metrics require an optional Google Ads connection. You choose whether to connect through Google OAuth and can revoke access at any time. Learn more in our{" "}
             <Link className="font-semibold text-indigo-300 underline underline-offset-4 hover:text-indigo-200" href="/privacy">
               Privacy Policy
             </Link>
@@ -80,8 +80,8 @@ export default function Home() {
         <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-semibold text-indigo-300">Illustrative demo data</p>
-              <p className="mt-1 text-sm text-slate-400">Example layout only — not live Google Ads results</p>
+              <p className="text-sm font-semibold text-indigo-300">Keyword search preview</p>
+              <p className="mt-1 text-sm text-slate-400">Example monthly search volumes — not live results</p>
             </div>
             <span className="rounded-full bg-slate-800 px-3 py-1 text-xs text-slate-300">Sample</span>
           </div>
@@ -99,13 +99,13 @@ export default function Home() {
       <section className="border-y border-slate-800 bg-slate-900/50">
         <div className="mx-auto max-w-7xl px-6 py-20">
           <div className="max-w-3xl">
-            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-300">Google data and your privacy</p>
-            <h2 className="mt-4 text-3xl font-black sm:text-4xl">Clear, limited, and user-authorized access</h2>
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-300">Historical keyword data</p>
+            <h2 className="mt-4 text-3xl font-black sm:text-4xl">The search insights you need, without the noise</h2>
             <p className="mt-5 text-lg leading-8 text-slate-300">
-              Keyword Traffic requests Google data only to provide the keyword-planning features described on this page. It does not generate artificial traffic or place advertising campaigns on your behalf.
+              Keyword Traffic turns your keyword list into useful research metrics for SEO research and advertising campaign planning. It does not generate website traffic or create, edit, or launch advertising campaigns.
             </p>
             <p className="mt-5 rounded-2xl border border-indigo-400/30 bg-indigo-400/10 px-5 py-4 text-base font-semibold leading-7 text-indigo-100">
-              Users securely log in via their Google Accounts to grant access exclusively for fetching Google Ads historical keyword metrics.
+              Google Ads connection is used only to retrieve historical metrics for the keywords you submit.
             </p>
           </div>
 
@@ -133,7 +133,7 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-6 py-20">
           <div className="max-w-3xl">
             <p className="text-sm font-semibold uppercase tracking-[0.2em] text-indigo-300">How it works</p>
-            <h2 className="mt-4 text-3xl font-black sm:text-4xl">A clear workflow for bulk keyword planning</h2>
+            <h2 className="mt-4 text-3xl font-black sm:text-4xl">From keyword list to search insights in three steps</h2>
           </div>
           <div className="mt-10 grid gap-5 md:grid-cols-3">
             {workflow.map((item, index) => (
@@ -149,15 +149,15 @@ export default function Home() {
 
       <section className="mx-auto grid w-full max-w-7xl gap-8 px-6 py-20 lg:grid-cols-2">
         <div className="rounded-3xl border border-slate-800 bg-slate-900 p-8">
-          <h2 className="text-2xl font-bold">Designed for authorized internal users</h2>
+          <h2 className="text-2xl font-bold">Organize research by project</h2>
           <p className="mt-4 leading-8 text-slate-300">
-            Access is account-based. Users manage only the projects and Google Ads accounts they are authorized to use. The platform is intended for campaign research and planning, not for selling or redistributing Google user data.
+            Keep keyword lists grouped by store, website, market, campaign, or client. Duplicate keywords are removed so your research stays clean and easy to review.
           </p>
         </div>
         <div className="rounded-3xl border border-slate-800 bg-slate-900 p-8">
-          <h2 className="text-2xl font-bold">Transparent data handling</h2>
+          <h2 className="text-2xl font-bold">Research metrics for better decisions</h2>
           <p className="mt-4 leading-8 text-slate-300">
-            Our Privacy Policy explains how account, keyword, OAuth, and Google Ads data are accessed, used, stored, retained, and deleted.
+            Compare search demand, advertiser competition, and bid ranges to prioritize keyword opportunities for content, SEO research, and paid campaign planning.
           </p>
           <Link className="mt-5 inline-block font-semibold text-indigo-300 hover:text-indigo-200" href="/privacy">
             Read the Privacy Policy →
