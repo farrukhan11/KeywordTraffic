@@ -3,6 +3,9 @@ import LegalPage, { LegalSection } from "../components/LegalPage";
 export const metadata = {
   title: "Terms of Service | Keyword Traffic",
   description: "Terms governing use of the Keyword Traffic keyword research and campaign-planning platform.",
+  alternates: {
+    canonical: "/terms",
+  },
 };
 
 export default function TermsPage() {

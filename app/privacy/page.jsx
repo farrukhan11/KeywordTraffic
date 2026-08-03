@@ -3,6 +3,9 @@ import LegalPage, { LegalSection } from "../components/LegalPage";
 export const metadata = {
   title: "Privacy Policy | Keyword Traffic",
   description: "How Keyword Traffic collects, uses, stores, and protects account, keyword, and Google Ads data.",
+  alternates: {
+    canonical: "/privacy",
+  },
 };
 
 export default function PrivacyPage() {

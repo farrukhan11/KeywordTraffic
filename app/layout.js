@@ -8,6 +8,9 @@ export const metadata = {
   },
   description:
     "Internal keyword research and campaign-planning platform for processing bulk keyword lists and Google Ads historical metrics.",
+  icons: {
+    icon: "/Coupon-tech.png",
+  },
   robots: {
     index: true,
     follow: true,

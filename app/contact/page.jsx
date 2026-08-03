@@ -3,6 +3,9 @@ import LegalPage, { LegalSection } from "../components/LegalPage";
 export const metadata = {
   title: "Contact | Keyword Traffic",
   description: "Contact Keyword Traffic for support, privacy, data deletion, or Google Ads connection questions.",
+  alternates: {
+    canonical: "/contact",
+  },
 };
 
 export default function ContactPage() {
