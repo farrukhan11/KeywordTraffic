@@ -87,8 +87,8 @@ export default function TermsPage() {
       <LegalSection title="11. Contact">
         <p>
           Questions about these Terms can be sent to{" "}
-          <a className="font-medium text-indigo-300 underline underline-offset-4 hover:text-indigo-200" href="mailto:seemreviews@gmail.com">
-            seemreviews@gmail.com
+          <a className="font-medium text-indigo-300 underline underline-offset-4 hover:text-indigo-200" href="mailto:support@coupon-tech.com">
+            support@coupon-tech.com
           </a>
           .
         </p>

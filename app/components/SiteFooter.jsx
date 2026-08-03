@@ -26,9 +26,9 @@ export default function SiteFooter() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Support email</p>
               <a
                 className="mt-2 inline-block font-semibold text-indigo-300 underline decoration-indigo-400/40 underline-offset-4 hover:text-indigo-200"
-                href="mailto:seemreviews@gmail.com"
+                href="mailto:support@coupon-tech.com"
               >
-                seemreviews@gmail.com
+                support@coupon-tech.com
               </a>
             </div>
           </div>

@@ -87,8 +87,8 @@ export default function PrivacyPage() {
       <LegalSection title="9. Contact">
         <p>
           For privacy questions, Google data requests, or account deletion, email{" "}
-          <a className="font-medium text-indigo-300 underline underline-offset-4 hover:text-indigo-200" href="mailto:seemreviews@gmail.com">
-            seemreviews@gmail.com
+          <a className="font-medium text-indigo-300 underline underline-offset-4 hover:text-indigo-200" href="mailto:support@coupon-tech.com">
+            support@coupon-tech.com
           </a>
           .
         </p>

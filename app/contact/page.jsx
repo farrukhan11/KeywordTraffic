@@ -15,8 +15,8 @@ export default function ContactPage() {
       <LegalSection title="Support email">
         <p>
           Email{" "}
-          <a className="font-medium text-indigo-300 underline underline-offset-4 hover:text-indigo-200" href="mailto:seemreviews@gmail.com">
-            seemreviews@gmail.com
+          <a className="font-medium text-indigo-300 underline underline-offset-4 hover:text-indigo-200" href="mailto:support@coupon-tech.com">
+            support@coupon-tech.com
           </a>
           .
         </p>
