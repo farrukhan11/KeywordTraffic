@@ -104,6 +104,9 @@ export default function Home() {
             <p className="mt-5 text-lg leading-8 text-slate-300">
               Keyword Traffic requests Google data only to provide the keyword-planning features described on this page. It does not generate artificial traffic or place advertising campaigns on your behalf.
             </p>
+            <p className="mt-5 rounded-2xl border border-indigo-400/30 bg-indigo-400/10 px-5 py-4 text-base font-semibold leading-7 text-indigo-100">
+              Users securely log in via their Google Accounts to grant access exclusively for fetching Google Ads historical keyword metrics.
+            </p>
           </div>
 
           <div className="mt-10 grid gap-5 md:grid-cols-3">
