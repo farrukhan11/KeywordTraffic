@@ -41,7 +41,7 @@ export default async function Dashboard({ searchParams }) {
   ];
 
   return (
-    <main className="min-h-screen bg-[#070b12] text-slate-100">
+    <main className="dashboard-ui min-h-screen bg-[#070b12] text-slate-100">
       <header className="sticky top-0 z-20 border-b border-white/10 bg-[#070b12]/90 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full items-center justify-between px-4 sm:px-6 lg:px-10 2xl:px-12">
           <Link href="/dashboard" className="flex items-center gap-3">

@@ -4,3 +4,11 @@
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--background); color: var(--foreground); font-family: Arial, Helvetica, sans-serif; }
 a { color: inherit; text-decoration: none; }
+
+/* Dashboard readability scale: compact data UI remains dense without becoming tiny. */
+.dashboard-ui { font-size: 16px; }
+.dashboard-ui .text-\[9px\] { font-size: 0.6875rem; line-height: 1rem; }
+.dashboard-ui .text-\[10px\] { font-size: 0.75rem; line-height: 1rem; }
+.dashboard-ui .text-\[11px\] { font-size: 0.8125rem; line-height: 1.125rem; }
+.dashboard-ui .text-xs { font-size: 0.875rem; line-height: 1.25rem; }
+.dashboard-ui .text-sm { font-size: 0.9375rem; line-height: 1.4rem; }
