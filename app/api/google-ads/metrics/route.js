@@ -6,7 +6,7 @@ import { getHistoricalMetrics } from "@/lib/google-ads/historical-metrics";
 import GoogleAdsConnection from "@/models/GoogleAdsConnection";
 
 const schema = z.object({
-  keywords: z.array(z.string().trim().min(1)).min(1).max(50),
+  keywords: z.array(z.string().trim().min(1)).min(1).max(1000),
   country: z.string().min(2),
   language: z.string().min(2),
 });
