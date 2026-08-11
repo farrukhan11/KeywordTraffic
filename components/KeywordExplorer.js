@@ -1,6 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 const MAX_KEYWORDS = 1000;
 const MONTH_ORDER = {
@@ -191,11 +194,11 @@ function TrendChart({ history, title }) {
 
 function Stat({ label, value, helper }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-[#0a111d] px-4 py-3">
+    <Card className="rounded-lg bg-[#0a111d] px-4 py-3">
       <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">{label}</p>
       <p className="mt-1 text-xl font-bold tracking-tight text-white">{value}</p>
       {helper && <p className="mt-1 text-[11px] text-slate-600">{helper}</p>}
-    </div>
+    </Card>
   );
 }
 
@@ -297,7 +300,7 @@ export default function KeywordExplorer() {
   }
 
   return (
-    <section className="mt-8 overflow-hidden rounded-2xl border border-white/10 bg-[#0b1220] shadow-xl shadow-black/20">
+    <section className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-[#0b1220] shadow-xl shadow-black/20">
       <div className="border-b border-white/10 p-5 sm:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -310,8 +313,8 @@ export default function KeywordExplorer() {
             <p className="mt-1 max-w-2xl text-sm text-slate-400">Paste multiple brands and keyword variations. Coupon, discount, promo and voucher terms are grouped automatically.</p>
           </div>
           <div className="flex gap-2 text-[11px] text-slate-500">
-            <span className="rounded-md border border-white/10 bg-[#080e18] px-2.5 py-1.5">Google Search</span>
-            <span className="rounded-md border border-white/10 bg-[#080e18] px-2.5 py-1.5">12 months</span>
+            <Badge variant="secondary">Google Search</Badge>
+            <Badge variant="secondary">12 months</Badge>
           </div>
         </div>
 
@@ -335,9 +338,9 @@ export default function KeywordExplorer() {
                 {formatNumber(inputKeywords.length)} / {formatNumber(MAX_KEYWORDS)} keywords
               </span>
             </div>
-            <button disabled={loading || !inputKeywords.length || inputKeywords.length > MAX_KEYWORDS} className="h-10 rounded-lg bg-cyan-300 px-5 text-sm font-bold text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:opacity-50">
+            <Button type="submit" disabled={loading || !inputKeywords.length || inputKeywords.length > MAX_KEYWORDS}>
               {loading ? "Fetching…" : "Get metrics"}
-            </button>
+            </Button>
           </div>
         </form>
 
@@ -421,7 +424,7 @@ export default function KeywordExplorer() {
                             <tr key={`${row.keyword}-${index}`} onClick={() => setSelectedKeyword(row.keyword)} className={`cursor-pointer transition ${active ? "bg-cyan-300/[0.06]" : "hover:bg-white/[0.025]"}`}>
                               <td className="px-4 py-3 font-semibold text-white">{row.keyword}</td>
                               <td className="px-4 py-3 font-bold text-white">{formatNumber(row.averageMonthlySearches)}</td>
-                              <td className="px-4 py-3"><span className={`rounded-full border px-2 py-1 text-[10px] font-semibold ${competitionBadge(row.competition)}`}>{row.competition || "NO DATA"}</span></td>
+                              <td className="px-4 py-3"><Badge variant="outline" className={competitionBadge(row.competition)}>{row.competition || "NO DATA"}</Badge></td>
                               <td className="px-4 py-3 text-slate-400">{row.competitionIndex ?? "—"}</td>
                               <td className="px-4 py-3 text-slate-400">{formatMoney(row.averageCpc)}</td>
                               <td className="px-4 py-3 text-slate-400">{formatMoney(row.lowTopOfPageBid)}</td>
@@ -442,7 +445,7 @@ export default function KeywordExplorer() {
                         <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">Keyword detail</p>
                         <h4 className="mt-1 text-lg font-bold text-white">{selectedResult.keyword}</h4>
                       </div>
-                      <span className={`w-fit rounded-full border px-2.5 py-1 text-[10px] font-semibold ${competitionBadge(selectedResult.competition)}`}>{selectedResult.competition || "NO COMPETITION DATA"}</span>
+                      <Badge variant="outline" className={competitionBadge(selectedResult.competition)}>{selectedResult.competition || "NO COMPETITION DATA"}</Badge>
                     </div>
                     <div className="p-4">
                       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">

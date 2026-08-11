@@ -36,7 +36,7 @@ export default async function LoginPage({ searchParams }) {
 
           {hasError && (
             <div className="mt-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
-              Email ya password galat hai. Admin account ke liye .env.local credentials check karein.
+              Incorrect email or password. Check .env.local credentials for the admin account.
             </div>
           )}
 
