@@ -498,9 +498,14 @@ export default function QuickKeywordSearch() {
               Paste coupon, discount, promo and voucher variations for multiple brands. Groups are detected automatically and each brand gets its own total traffic.
             </p>
           </div>
-          <div className="flex flex-wrap gap-2 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center justify-end gap-2 text-xs text-slate-500">
             <span className="rounded-lg border border-white/10 bg-black/15 px-3 py-2">Network: <strong className="text-slate-300">Google Search</strong></span>
             <span className="rounded-lg border border-white/10 bg-black/15 px-3 py-2">Period: <strong className="text-slate-300">Last 12 months</strong></span>
+            {results.length > 0 && (
+              <button type="button" onClick={exportCsv} className="rounded-lg bg-cyan-300 px-4 py-2 font-black text-slate-950 transition hover:bg-cyan-200">
+                Export CSV
+              </button>
+            )}
           </div>
         </div>
 
@@ -541,16 +546,6 @@ export default function QuickKeywordSearch() {
             <MetricCard label="Requested keywords" value={formatNumber(requestedKeywords.length)} helper="Unique inputs sent to Google" />
             <MetricCard label="Google result rows" value={formatNumber(results.length)} helper={requestedKeywords.length !== results.length ? "Google merged one or more close variants" : "One result row per input"} />
             <MetricCard label="Combined avg traffic" value={formatNumber(totalSearchVolume)} helper="Sum of all returned avg monthly searches" />
-          </div>
-
-          <div className="mt-5 flex flex-col justify-between gap-3 rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.04] p-4 sm:flex-row sm:items-center">
-            <div>
-              <p className="font-black text-white">Export all traffic data</p>
-              <p className="mt-1 text-xs text-slate-500">CSV includes every keyword row and a total row for each group.</p>
-            </div>
-            <button type="button" onClick={exportCsv} className="rounded-xl bg-cyan-300 px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-cyan-200">
-              Export CSV
-            </button>
           </div>
 
           <div className="mt-6">
