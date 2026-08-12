@@ -61,6 +61,11 @@ function formatMoney(value) {
   return Number(value).toFixed(2);
 }
 
+function csvCell(value) {
+  const text = value == null ? "" : String(value);
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
 function monthName(month) {
   return String(month || "")
     .toLowerCase()
@@ -294,6 +299,27 @@ export default function KeywordExplorer() {
   const selectedHistory = sortHistory(selectedResult?.monthlySearchVolumes);
   const latestPoint = selectedHistory[selectedHistory.length - 1] || null;
 
+  function exportCsv() {
+    const rows = [["Group", "Row type", "Keyword", "Returned keyword", "Average monthly traffic", "Competition", "Competition index", "Average CPC", "Low top bid", "High top bid", "Country", "Language"]];
+    groups.forEach((group) => {
+      group.requestedKeywords.forEach((keyword) => {
+        const requested = normalize(keyword).toLowerCase();
+        const result = group.results.find((row) => normalize(row.keyword).toLowerCase() === requested || (row.closeVariants || []).some((variant) => normalize(variant).toLowerCase() === requested));
+        rows.push([group.name, "KEYWORD", keyword, result?.keyword || "", result?.averageMonthlySearches ?? "", result?.competition || "", result?.competitionIndex ?? "", result?.averageCpc ?? "", result?.lowTopOfPageBid ?? "", result?.highTopOfPageBid ?? "", country, language]);
+      });
+      rows.push([group.name, "GROUP TOTAL", "", "", group.totalVolume, "", "", "", "", "", country, language]);
+    });
+    const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `keyword-traffic-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
   function selectGroup(group) {
     setSelectedGroupKey(group.key);
     setSelectedKeyword(group.results[0]?.keyword || "");
@@ -312,9 +338,10 @@ export default function KeywordExplorer() {
             <h2 className="mt-2 text-2xl font-bold tracking-tight text-white">Bulk keyword research</h2>
             <p className="mt-1 max-w-2xl text-sm text-slate-400">Paste multiple brands and keyword variations. Coupon, discount, promo and voucher terms are grouped automatically.</p>
           </div>
-          <div className="flex gap-2 text-[11px] text-slate-500">
+          <div className="flex flex-wrap items-center justify-end gap-2 text-[11px] text-slate-500">
             <Badge variant="secondary">Google Search</Badge>
             <Badge variant="secondary">12 months</Badge>
+            {results.length > 0 && <Button type="button" onClick={exportCsv} className="h-8 px-3 text-xs">Export CSV</Button>}
           </div>
         </div>
 
