@@ -50,6 +50,11 @@ function normalizeKeyword(value) {
   return String(value || "").trim().replace(/\s+/g, " ");
 }
 
+function csvCell(value) {
+  const text = value == null ? "" : String(value);
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
 function inferGroupName(keyword) {
   const cleaned = normalizeKeyword(keyword);
   const base = cleaned.replace(MODIFIER_SUFFIX, "").trim();
@@ -392,6 +397,79 @@ export default function QuickKeywordSearch() {
   const latestSearches = historyValues.length ? historyValues[historyValues.length - 1] : null;
   const closeVariants = Array.isArray(selectedResult?.closeVariants) ? selectedResult.closeVariants : [];
 
+  function exportCsv() {
+    if (!groups.length) return;
+
+    const headers = [
+      "Group",
+      "Row type",
+      "Keyword",
+      "Returned keyword",
+      "Average monthly traffic",
+      "Competition",
+      "Competition index",
+      "Average CPC",
+      "Low top bid",
+      "High top bid",
+      "Country",
+      "Language",
+    ];
+    const rows = [headers];
+
+    groups.forEach((group) => {
+      group.requestedKeywords.forEach((keyword) => {
+        const normalizedKeyword = normalizeKeyword(keyword).toLowerCase();
+        const result = group.results.find((item) => {
+          if (normalizeKeyword(item.keyword).toLowerCase() === normalizedKeyword) return true;
+          return (item.closeVariants || []).some(
+            (variant) => normalizeKeyword(variant).toLowerCase() === normalizedKeyword
+          );
+        });
+
+        rows.push([
+          group.name,
+          "KEYWORD",
+          keyword,
+          result?.keyword || "",
+          result?.averageMonthlySearches ?? "",
+          result?.competition || "",
+          result?.competitionIndex ?? "",
+          result?.averageCpc ?? "",
+          result?.lowTopOfPageBid ?? "",
+          result?.highTopOfPageBid ?? "",
+          country,
+          language,
+        ]);
+      });
+
+      rows.push([
+        group.name,
+        "GROUP TOTAL",
+        "",
+        "",
+        group.totalVolume,
+        "",
+        "",
+        "",
+        "",
+        "",
+        country,
+        language,
+      ]);
+    });
+
+    const csv = rows.map((row) => row.map(csvCell).join(",")).join("\r\n");
+    const blob = new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `keyword-traffic-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  }
+
   function selectGroup(group) {
     setSelectedGroupKey(group.key);
     setSelectedKeyword(group.results[0]?.keyword || "");
@@ -463,6 +541,16 @@ export default function QuickKeywordSearch() {
             <MetricCard label="Requested keywords" value={formatNumber(requestedKeywords.length)} helper="Unique inputs sent to Google" />
             <MetricCard label="Google result rows" value={formatNumber(results.length)} helper={requestedKeywords.length !== results.length ? "Google merged one or more close variants" : "One result row per input"} />
             <MetricCard label="Combined avg traffic" value={formatNumber(totalSearchVolume)} helper="Sum of all returned avg monthly searches" />
+          </div>
+
+          <div className="mt-5 flex flex-col justify-between gap-3 rounded-2xl border border-cyan-300/15 bg-cyan-300/[0.04] p-4 sm:flex-row sm:items-center">
+            <div>
+              <p className="font-black text-white">Export all traffic data</p>
+              <p className="mt-1 text-xs text-slate-500">CSV includes every keyword row and a total row for each group.</p>
+            </div>
+            <button type="button" onClick={exportCsv} className="rounded-xl bg-cyan-300 px-4 py-2.5 text-sm font-black text-slate-950 transition hover:bg-cyan-200">
+              Export CSV
+            </button>
           </div>
 
           <div className="mt-6">
