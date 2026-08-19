@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
+import CountrySelect from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
@@ -355,9 +356,7 @@ export default function KeywordExplorer() {
           />
           <div className="flex flex-col gap-3 border-t border-white/10 bg-[#0a111d] p-3 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex flex-wrap items-center gap-2">
-              <select value={country} onChange={(event) => setCountry(event.target.value)} className="h-10 min-w-44 rounded-lg border border-white/10 bg-[#0d1625] px-3 text-sm font-medium text-white outline-none focus:border-cyan-400/30">
-                <option>United Kingdom</option><option>United States</option><option>Pakistan</option><option>Canada</option><option>Australia</option><option>United Arab Emirates</option>
-              </select>
+              <CountrySelect value={country} onChange={setCountry} />
               <select value={language} onChange={(event) => setLanguage(event.target.value)} className="h-10 min-w-36 rounded-lg border border-white/10 bg-[#0d1625] px-3 text-sm font-medium text-white outline-none focus:border-cyan-400/30">
                 <option>English</option><option>Urdu</option><option>Arabic</option><option>French</option><option>German</option>
               </select>

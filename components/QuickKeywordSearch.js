@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import CountrySelect from "@/components/ui/CountrySelect";
 
 const MONTH_ORDER = {
   JANUARY: 0,
@@ -521,9 +522,7 @@ export default function QuickKeywordSearch() {
               />
               <span className="absolute bottom-3 right-3 rounded-md bg-white/[0.04] px-2 py-1 text-[10px] font-bold text-slate-600">max 50</span>
             </div>
-            <select value={country} onChange={(event) => setCountry(event.target.value)} className="rounded-xl border border-white/10 bg-[#0b1422] px-4 py-3 text-sm font-semibold text-white outline-none focus:border-cyan-400/40">
-              <option>United Kingdom</option><option>United States</option><option>Pakistan</option><option>Canada</option><option>Australia</option><option>United Arab Emirates</option>
-            </select>
+            <CountrySelect value={country} onChange={setCountry} className="rounded-xl border border-white/10 bg-[#0b1422] px-4 py-3 text-sm font-semibold text-white outline-none focus:border-cyan-400/40" />
             <select value={language} onChange={(event) => setLanguage(event.target.value)} className="rounded-xl border border-white/10 bg-[#0b1422] px-4 py-3 text-sm font-semibold text-white outline-none focus:border-cyan-400/40">
               <option>English</option><option>Urdu</option><option>Arabic</option><option>French</option><option>German</option>
             </select>
