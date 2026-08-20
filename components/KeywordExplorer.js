@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import CountrySelect from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/button";
@@ -218,8 +218,21 @@ export default function KeywordExplorer() {
   const [requestedKeywords, setRequestedKeywords] = useState([]);
   const [selectedGroupKey, setSelectedGroupKey] = useState("");
   const [selectedKeyword, setSelectedKeyword] = useState("");
+  const [quota, setQuota] = useState(null);
 
   const inputKeywords = useMemo(() => parseKeywords(keywords), [keywords]);
+
+  useEffect(() => {
+    fetchQuota();
+  }, []);
+
+  async function fetchQuota() {
+    try {
+      const response = await fetch("/api/google-ads/quota");
+      const data = await response.json();
+      if (data.quota) setQuota(data.quota);
+    } catch {}
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -241,6 +254,7 @@ export default function KeywordExplorer() {
         body: JSON.stringify({ keywords: parsed, country, language }),
       });
       const data = await response.json();
+      if (data.quota) setQuota(data.quota);
       if (!response.ok) throw new Error(data.error || "Unable to fetch Google Ads metrics.");
 
       const rows = data.results || [];
@@ -327,7 +341,7 @@ export default function KeywordExplorer() {
   }
 
   return (
-    <section className="mt-8 overflow-hidden rounded-xl border border-white/10 bg-[#0b1220] shadow-xl shadow-black/20">
+    <section className="mt-8 rounded-xl border border-white/10 bg-[#0b1220] shadow-xl shadow-black/20">
       <div className="border-b border-white/10 p-5 sm:p-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -342,11 +356,25 @@ export default function KeywordExplorer() {
           <div className="flex flex-wrap items-center justify-end gap-2 text-[11px] text-slate-500">
             <Badge variant="secondary">Google Search</Badge>
             <Badge variant="secondary">12 months</Badge>
+            {quota && (
+              <Badge
+                variant="secondary"
+                className={
+                  quota.status === "exceeded"
+                    ? "border-red-400/30 bg-red-400/10 text-red-300"
+                    : quota.status === "warning"
+                      ? "border-amber-400/30 bg-amber-400/10 text-amber-300"
+                      : ""
+                }
+              >
+                API: {quota.used.toLocaleString()} / {quota.limit.toLocaleString()} used
+              </Badge>
+            )}
             {results.length > 0 && <Button type="button" onClick={exportCsv} className="h-8 px-3 text-xs">Export CSV</Button>}
           </div>
         </div>
 
-        <form onSubmit={handleSubmit} className="mt-5 overflow-hidden rounded-xl border border-white/10 bg-[#080e18] focus-within:border-cyan-400/30">
+        <form onSubmit={handleSubmit} className="mt-5 rounded-xl border border-white/10 bg-[#080e18] focus-within:border-cyan-400/30">
           <textarea
             value={keywords}
             onChange={(event) => setKeywords(event.target.value)}

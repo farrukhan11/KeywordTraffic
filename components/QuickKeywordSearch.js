@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import CountrySelect from "@/components/ui/CountrySelect";
 
 const MONTH_ORDER = {
@@ -257,6 +257,19 @@ export default function QuickKeywordSearch() {
   const [selectedKeyword, setSelectedKeyword] = useState("");
   const [sortKey, setSortKey] = useState("averageMonthlySearches");
   const [sortDirection, setSortDirection] = useState("desc");
+  const [quota, setQuota] = useState(null);
+
+  useEffect(() => {
+    fetchQuota();
+  }, []);
+
+  async function fetchQuota() {
+    try {
+      const response = await fetch("/api/google-ads/quota");
+      const data = await response.json();
+      if (data.quota) setQuota(data.quota);
+    } catch {}
+  }
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -278,6 +291,7 @@ export default function QuickKeywordSearch() {
         body: JSON.stringify({ keywords: parsedKeywords, country, language }),
       });
       const data = await response.json();
+      if (data.quota) setQuota(data.quota);
       if (!response.ok) throw new Error(data.error || "Unable to fetch keyword traffic.");
 
       const nextResults = data.results || [];
@@ -486,7 +500,7 @@ export default function QuickKeywordSearch() {
   );
 
   return (
-    <section className="mt-8 overflow-hidden rounded-[28px] border border-white/10 bg-[#0b1321] shadow-2xl shadow-black/20">
+    <section className="mt-8 rounded-[28px] border border-white/10 bg-[#0b1321] shadow-2xl shadow-black/20">
       <div className="border-b border-white/10 bg-gradient-to-r from-cyan-400/[0.07] via-transparent to-violet-400/[0.05] p-5 sm:p-7">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div>
@@ -502,6 +516,21 @@ export default function QuickKeywordSearch() {
           <div className="flex flex-wrap items-center justify-end gap-2 text-xs text-slate-500">
             <span className="rounded-lg border border-white/10 bg-black/15 px-3 py-2">Network: <strong className="text-slate-300">Google Search</strong></span>
             <span className="rounded-lg border border-white/10 bg-black/15 px-3 py-2">Period: <strong className="text-slate-300">Last 12 months</strong></span>
+            {quota && (
+              <span
+                className={`rounded-lg border px-3 py-2 ${
+                  quota.status === "exceeded"
+                    ? "border-red-400/30 bg-red-400/10 text-red-300"
+                    : quota.status === "warning"
+                      ? "border-amber-400/30 bg-amber-400/10 text-amber-300"
+                      : "border-white/10 bg-black/15 text-slate-400"
+                }`}
+              >
+                API: <strong className={quota.status === "exceeded" ? "text-red-200" : quota.status === "warning" ? "text-amber-200" : "text-slate-300"}>
+                  {quota.used.toLocaleString()} / {quota.limit.toLocaleString()}
+                </strong> used
+              </span>
+            )}
             {results.length > 0 && (
               <button type="button" onClick={exportCsv} className="rounded-lg bg-cyan-300 px-4 py-2 font-black text-slate-950 transition hover:bg-cyan-200">
                 Export CSV
