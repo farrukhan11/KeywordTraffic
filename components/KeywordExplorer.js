@@ -23,7 +23,9 @@ const MONTH_ORDER = {
   DECEMBER: 11,
 };
 
-const MODIFIER_SUFFIX = /\s+(?:discount code|discounts|discount|coupon code|coupons|coupon|promo code|promo|voucher code|voucher)\s*$/i;
+const MODIFIER_TERMS = "(?:discount codes?|discounts?|coupon codes?|coupons?|promo codes?|promo|voucher codes?|vouchers?|offers?|gutscheincodes?|gutscheine?|rabattcodes?|rabatt|aktionscodes?|aktion(?:en)?|codes? promo|bons? de r[eé]duction|codes? de r[eé]duction|r[eé]ductions?|c[oó]digos? descuentos?|c[oó]digos? promocional(?:es)?|c[oó]digos? de desconto|cup[oó]ns?(?: de desconto)?|descuentos?|desconto|ofertas?|codice sconto|buono sconto|sconto|kod rabatowy|kupon rabatowy|kod promocyjny|promocja|kortingscode|actiecode|korting)";
+const MODIFIER_SUFFIX = new RegExp(`\\s+${MODIFIER_TERMS}\\s*$`, "i");
+const MODIFIER_PREFIX = new RegExp(`^\\s*${MODIFIER_TERMS}\\s+`, "i");
 
 function normalize(value) {
   return String(value || "").trim().replace(/\s+/g, " ");
@@ -37,7 +39,8 @@ function titleCase(value) {
 
 function inferGroup(keyword) {
   const cleaned = normalize(keyword);
-  return cleaned.replace(MODIFIER_SUFFIX, "").trim() || cleaned;
+  const base = cleaned.replace(MODIFIER_SUFFIX, "").replace(MODIFIER_PREFIX, "").trim();
+  return base || cleaned;
 }
 
 function parseKeywords(value) {
