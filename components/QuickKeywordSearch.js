@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import CountrySelect from "@/components/ui/CountrySelect";
+import { SUPPORTED_LANGUAGES } from "@/lib/google-ads/languages";
 
 const MONTH_ORDER = {
   JANUARY: 0,
@@ -553,7 +554,9 @@ export default function QuickKeywordSearch() {
             </div>
             <CountrySelect value={country} onChange={setCountry} className="rounded-xl border border-white/10 bg-[#0b1422] px-4 py-3 text-sm font-semibold text-white outline-none focus:border-cyan-400/40" />
             <select value={language} onChange={(event) => setLanguage(event.target.value)} className="rounded-xl border border-white/10 bg-[#0b1422] px-4 py-3 text-sm font-semibold text-white outline-none focus:border-cyan-400/40">
-              <option>English</option><option>Urdu</option><option>Arabic</option><option>French</option><option>German</option>
+              {SUPPORTED_LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>{lang}</option>
+              ))}
             </select>
             <button disabled={loading} className="min-h-[54px] rounded-xl bg-cyan-300 px-7 py-3 text-sm font-black text-slate-950 shadow-lg shadow-cyan-950/30 transition hover:bg-cyan-200 disabled:cursor-wait disabled:opacity-60">
               {loading ? "Fetching data…" : "Search keywords"}

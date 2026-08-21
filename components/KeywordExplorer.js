@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import CountrySelect from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { SUPPORTED_LANGUAGES } from "@/lib/google-ads/languages";
 
 const MAX_KEYWORDS = 1000;
 const MONTH_ORDER = {
@@ -386,7 +387,9 @@ export default function KeywordExplorer() {
             <div className="flex flex-wrap items-center gap-2">
               <CountrySelect value={country} onChange={setCountry} />
               <select value={language} onChange={(event) => setLanguage(event.target.value)} className="h-10 min-w-36 rounded-lg border border-white/10 bg-[#0d1625] px-3 text-sm font-medium text-white outline-none focus:border-cyan-400/30">
-                <option>English</option><option>Urdu</option><option>Arabic</option><option>French</option><option>German</option>
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <option key={lang} value={lang}>{lang}</option>
+                ))}
               </select>
               <span className={`rounded-md px-2.5 py-1.5 text-xs ${inputKeywords.length > MAX_KEYWORDS ? "bg-red-400/10 text-red-300" : "bg-white/[0.04] text-slate-500"}`}>
                 {formatNumber(inputKeywords.length)} / {formatNumber(MAX_KEYWORDS)} keywords

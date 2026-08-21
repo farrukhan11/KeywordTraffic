@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import * as XLSX from "xlsx";
+import { SUPPORTED_LANGUAGES } from "@/lib/google-ads/languages";
 
 function normaliseRow(row) {
   const store = row["Store Name"] ?? row.store ?? row.Store ?? row.name ?? "";
@@ -136,7 +137,11 @@ export default function NewProject() {
               </div>
               <div>
                 <label className="block text-sm font-bold text-slate-200">Language</label>
-                <input name="language" defaultValue="English" required className="mt-2 w-full rounded-xl border border-white/10 bg-[#080d17] px-4 py-3 text-white outline-none focus:border-violet-400" />
+                <select name="language" defaultValue="English" required className="mt-2 w-full rounded-xl border border-white/10 bg-[#080d17] px-4 py-3 text-white outline-none focus:border-violet-400">
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <option key={lang} value={lang}>{lang}</option>
+                  ))}
+                </select>
               </div>
             </div>
 
