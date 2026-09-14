@@ -23,9 +23,57 @@ const MONTH_ORDER = {
   DECEMBER: 11,
 };
 
-const MODIFIER_TERMS = "(?:discount codes?|discounts?|coupon codes?|coupons?|promo codes?|promo|voucher codes?|vouchers?|offers?|gutscheincodes?|gutscheine?|rabattcodes?|rabatt|aktionscodes?|aktion(?:en)?|codes? promo|bons? de r[eé]duction|codes? de r[eé]duction|r[eé]ductions?|c[oó]digos? descuentos?|c[oó]digos? promocional(?:es)?|c[oó]digos? de desconto|cup[oó]ns?(?: de desconto)?|descuentos?|desconto|ofertas?|codice sconto|buono sconto|sconto|kod rabatowy|kupon rabatowy|kod promocyjny|promocja|kortingscode|actiecode|korting)";
-const MODIFIER_SUFFIX = new RegExp(`\\s+${MODIFIER_TERMS}\\s*$`, "i");
-const MODIFIER_PREFIX = new RegExp(`^\\s*${MODIFIER_TERMS}\\s+`, "i");
+const MODIFIER_WORDS = new Set([
+  "actiecode",
+  "aktion",
+  "aktionen",
+  "aktionscode",
+  "aktionscodes",
+  "bon",
+  "bons",
+  "buono",
+  "code",
+  "codes",
+  "codice",
+  "codigo",
+  "codigos",
+  "coupon",
+  "coupons",
+  "cupon",
+  "cupones",
+  "cupons",
+  "de",
+  "desconto",
+  "descuentos",
+  "descuento",
+  "discount",
+  "discounts",
+  "gutschein",
+  "gutscheincodes",
+  "gutscheine",
+  "kod",
+  "korting",
+  "kortingscode",
+  "kupon",
+  "offer",
+  "offers",
+  "oferta",
+  "ofertas",
+  "promo",
+  "promocionales",
+  "promocional",
+  "promocja",
+  "promocyjny",
+  "rabatowy",
+  "rabatt",
+  "rabattcode",
+  "rabattcodes",
+  "reduction",
+  "reductions",
+  "sconto",
+  "voucher",
+  "vouchers",
+]);
 
 function normalize(value) {
   return String(value || "").trim().replace(/\s+/g, " ");
@@ -37,9 +85,21 @@ function titleCase(value) {
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 }
 
+function normalizeModifierToken(value) {
+  return String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "");
+}
+
 function inferGroup(keyword) {
   const cleaned = normalize(keyword);
-  const base = cleaned.replace(MODIFIER_SUFFIX, "").replace(MODIFIER_PREFIX, "").trim();
+  const base = cleaned
+    .split(" ")
+    .filter((word) => !MODIFIER_WORDS.has(normalizeModifierToken(word)))
+    .join(" ")
+    .trim();
   return base || cleaned;
 }
 
