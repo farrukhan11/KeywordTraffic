@@ -493,15 +493,69 @@ function brandWord(word) {
   return stripped && stripped !== token ? stripped : word;
 }
 
-function inferGroup(keyword) {
+function brandTokenPart(word) {
+  const token = normalizeModifierToken(word);
+  if (!token || MODIFIER_WORDS.has(token)) return null;
+
+  const stripped = stripAttachedModifiers(token);
+  const key = stripped && stripped !== token ? stripped : token;
+  if (!key || MODIFIER_WORDS.has(key) || key.length < 2) return null;
+
+  return {
+    key,
+    label: stripped && stripped !== token ? stripped : word,
+  };
+}
+
+function buildBrandTokenStats(keywords) {
+  const stats = new Map();
+
+  keywords.forEach((keyword) => {
+    const uniqueTokens = new Set();
+    normalize(keyword)
+      .split(" ")
+      .map(brandTokenPart)
+      .filter(Boolean)
+      .forEach((part) => uniqueTokens.add(part.key));
+
+    uniqueTokens.forEach((token) => {
+      stats.set(token, (stats.get(token) || 0) + 1);
+    });
+  });
+
+  return stats;
+}
+
+function inferGroup(keyword, tokenStats = null) {
   const cleaned = normalize(keyword);
-  const base = cleaned
+  const parts = cleaned
     .split(" ")
-    .map(brandWord)
-    .filter(Boolean)
+    .map((word) => {
+      const part = brandTokenPart(word);
+      return part ? { ...part, fallbackLabel: brandWord(word) } : null;
+    })
+    .filter(Boolean);
+
+  const counts = parts.map((part) => tokenStats?.get(part.key) || 0);
+  const maxCount = Math.max(...counts, 0);
+  const selectedParts = maxCount > 1 ? parts.filter((part) => (tokenStats?.get(part.key) || 0) === maxCount) : parts;
+
+  const base = selectedParts
+    .map((part) => part.label || part.fallbackLabel)
     .join(" ")
     .trim();
   return base || cleaned;
+}
+
+function buildKeywordGroupLookup(keywords) {
+  const tokenStats = buildBrandTokenStats(keywords);
+  const keywordToGroup = new Map();
+
+  keywords.forEach((keyword) => {
+    keywordToGroup.set(normalize(keyword).toLowerCase(), inferGroup(keyword, tokenStats));
+  });
+
+  return { keywordToGroup, tokenStats };
 }
 
 function parseKeywords(value) {
@@ -723,9 +777,10 @@ export default function KeywordExplorer() {
       if (!response.ok) throw new Error(data.error || "Unable to fetch Google Ads metrics.");
 
       const rows = data.results || [];
+      const groupLookup = buildKeywordGroupLookup(parsed);
       setRequestedKeywords(parsed);
       setResults(rows);
-      setSelectedGroupKey(inferGroup(parsed[0]).toLowerCase());
+      setSelectedGroupKey((groupLookup.keywordToGroup.get(normalize(parsed[0]).toLowerCase()) || inferGroup(parsed[0])).toLowerCase());
       setSelectedKeyword(rows[0]?.keyword || "");
       if (!rows.length) setError("Google returned no historical metrics for these keywords.");
     } catch (err) {
@@ -738,11 +793,12 @@ export default function KeywordExplorer() {
   const groups = useMemo(() => {
     const groupMap = new Map();
     const keywordToGroup = new Map();
+    const groupLookup = buildKeywordGroupLookup(requestedKeywords);
 
     requestedKeywords.forEach((keyword) => {
-      const name = inferGroup(keyword);
+      const name = groupLookup.keywordToGroup.get(normalize(keyword).toLowerCase()) || inferGroup(keyword, groupLookup.tokenStats);
       const key = name.toLowerCase();
-      keywordToGroup.set(keyword.toLowerCase(), key);
+      keywordToGroup.set(normalize(keyword).toLowerCase(), key);
       if (!groupMap.has(key)) groupMap.set(key, { key, name: titleCase(name), requestedKeywords: [], results: [] });
       groupMap.get(key).requestedKeywords.push(keyword);
     });
@@ -758,8 +814,8 @@ export default function KeywordExplorer() {
         if (variant) groupKey = keywordToGroup.get(variant);
       }
 
-      if (!groupKey) groupKey = inferGroup(result.keyword).toLowerCase();
-      if (!groupMap.has(groupKey)) groupMap.set(groupKey, { key: groupKey, name: titleCase(inferGroup(result.keyword)), requestedKeywords: [], results: [] });
+      if (!groupKey) groupKey = inferGroup(result.keyword, groupLookup.tokenStats).toLowerCase();
+      if (!groupMap.has(groupKey)) groupMap.set(groupKey, { key: groupKey, name: titleCase(inferGroup(result.keyword, groupLookup.tokenStats)), requestedKeywords: [], results: [] });
       groupMap.get(groupKey).results.push(result);
     });
 
