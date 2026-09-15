@@ -56,6 +56,8 @@ const MODIFIER_WORDS = new Set([
   "oferta",
   "ofertas",
   "promo",
+  "promocion",
+  "promociones",
   "promocionales",
   "promocional",
   "promocja",
