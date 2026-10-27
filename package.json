@@ -2,11 +2,13 @@
   "name": "keyword-traffic",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "test": "node --test tests/keyword-groups.test.mjs",
     "seed:admin": "node --env-file=.env scripts/seed-admin.mjs"
   },
   "dependencies": {

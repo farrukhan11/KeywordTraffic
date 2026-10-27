@@ -6,6 +6,13 @@ import CountrySelect from "@/components/ui/CountrySelect";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { SUPPORTED_LANGUAGES } from "@/lib/google-ads/languages";
+import {
+  buildRequestedGroups,
+  deriveGroupName,
+  groupKey,
+  normalizeKeyword,
+  resolveResultGroupKey,
+} from "@/lib/keyword-groups";
 
 const MAX_KEYWORDS = 1000;
 const MONTH_ORDER = {
@@ -23,546 +30,11 @@ const MONTH_ORDER = {
   DECEMBER: 11,
 };
 
-const MODIFIER_WORDS = new Set([
-  "actiecode",
-  "actiecodes",
-  "actie",
-  "acties",
-  "ad",
-  "ajanlat",
-  "ajanlatok",
-  "aanbieding",
-  "aanbiedingscode",
-  "aanbiedingscodes",
-  "aanbiedingen",
-  "akce",
-  "akcia",
-  "akcie",
-  "akciok",
-  "akcio",
-  "akcija",
-  "akcije",
-  "akcija",
-  "alok",
-  "aktion",
-  "aktionen",
-  "aktionscode",
-  "aktionscodes",
-  "alennus",
-  "alennukset",
-  "alennuskoodi",
-  "alennuskoodit",
-  "atlaide",
-  "atlaides",
-  "atlaizu",
-  "dai",
-  "đãi",
-  "bon",
-  "bons",
-  "buoni",
-  "buono",
-  "campanha",
-  "campanhas",
-  "code",
-  "codes",
-  "codi",
-  "codis",
-  "codice",
-  "codici",
-  "cod",
-  "coduri",
-  "codigo",
-  "codigos",
-  "coupon",
-  "couponcode",
-  "couponcodes",
-  "coupons",
-  "cupom",
-  "cupoane",
-  "cupon",
-  "cupones",
-  "cupons",
-  "de",
-  "desconto",
-  "descontos",
-  "descuentos",
-  "descuento",
-  "descompte",
-  "descomptes",
-  "discount",
-  "discounts",
-  "diskon",
-  "diskwento",
-  "erbjudande",
-  "erbjudanden",
-  "bezplatna",
-  "bezplatny",
-  "darmowa",
-  "darmowy",
-  "delivery",
-  "dostawa",
-  "envio",
-  "envios",
-  "envoi",
-  "firsat",
-  "firsatlar",
-  "fragt",
-  "fragten",
-  "frakt",
-  "frakten",
-  "fri",
-  "free",
-  "freeshipping",
-  "forsendelse",
-  "forsendelsen",
-  "gratis",
-  "gratisfrakt",
-  "gratisfragt",
-  "gratisversand",
-  "gratuite",
-  "gratuit",
-  "gratuita",
-  "gratuito",
-  "gratuitos",
-  "gutschein",
-  "gutscheincode",
-  "gutscheincodes",
-  "gutscheine",
-  "gia",
-  "giá",
-  "giam",
-  "giảm",
-  "giamgia",
-  "indirim",
-  "indirimi",
-  "indirimler",
-  "kampagne",
-  "kampanj",
-  "kampanjekode",
-  "kampanjekoder",
-  "kampanjakoodi",
-  "kampanjkod",
-  "kampanjkoder",
-  "kampanjkode",
-  "kampanjkoder",
-  "kod",
-  "kode",
-  "kodeks",
-  "kodu",
-  "koder",
-  "kodi",
-  "kodai",
-  "kodas",
-  "kodlar",
-  "kodlari",
-  "kodok",
-  "kodovi",
-  "kody",
-  "kargo",
-  "korting",
-  "kortingscode",
-  "kortingscodes",
-  "kortingen",
-  "kupon",
-  "kuponu",
-  "kuponer",
-  "kuponi",
-  "kuponkode",
-  "kuponkoder",
-  "kuponki",
-  "kuponok",
-  "kupony",
-  "kupong",
-  "kuponger",
-  "kupongid",
-  "kupon",
-  "khuyen",
-  "khuyến",
-  "khuyenmai",
-  "ma",
-  "mã",
-  "mai",
-  "mãi",
-  "magiamgia",
-  "mien",
-  "miễn",
-  "miễnphí",
-  "nabidka",
-  "nabidky",
-  "nuolaida",
-  "nuolaidos",
-  "offer",
-  "offers",
-  "oferta",
-  "ofertas",
-  "oferte",
-  "offerta",
-  "offerte",
-  "offre",
-  "offres",
-  "pakkumine",
-  "pakkumised",
-  "pasiulymas",
-  "pasiulymai",
-  "piedavajumi",
-  "piedavajums",
-  "ponuda",
-  "ponude",
-  "posta",
-  "ponuka",
-  "ponuky",
-  "popust",
-  "popusti",
-  "potongan",
-  "promo",
-  "promos",
-  "promotion",
-  "promotions",
-  "promotional",
-  "promotie",
-  "promoties",
-  "promotiecode",
-  "promotiecodes",
-  "promosyonu",
-  "promocion",
-  "promociones",
-  "promocionales",
-  "promocional",
-  "promocio",
-  "promocions",
-  "promocja",
-  "promocje",
-  "promocao",
-  "promocoes",
-  "promocionais",
-  "promocyjny",
-  "promocyjne",
-  "promosyon",
-  "promozione",
-  "promozioni",
-  "phieugiamgia",
-  "rabatowy",
-  "rabatowe",
-  "rabat",
-  "rabaty",
-  "rabatt",
-  "rabatte",
-  "rabattcode",
-  "rabattcodes",
-  "rabattkod",
-  "rabattkoder",
-  "rabattkode",
-  "rabattkoder",
-  "rabatkod",
-  "rabatkods",
-  "rabatkode",
-  "rabatkoder",
-  "rabais",
-  "reduction",
-  "reductions",
-  "reducere",
-  "reduceri",
-  "remise",
-  "remises",
-  "sale",
-  "sales",
-  "shipping",
-  "spedizione",
-  "spedizioni",
-  "sleva",
-  "slevy",
-  "slevove",
-  "slevovy",
-  "sooduskood",
-  "sooduskoodid",
-  "soodustus",
-  "soodustused",
-  "sconto",
-  "sconti",
-  "tarjous",
-  "tarjoukset",
-  "teklif",
-  "tilbud",
-  "tawaran",
-  "ucretsiz",
-  "ücretsiz",
-  "uu",
-  "ưu",
-  "uudai",
-  "znizka",
-  "znizki",
-  "zlava",
-  "zlavy",
-  "zlavove",
-  "zlavovy",
-  "voucher",
-  "vouchers",
-  "versand",
-  "verzending",
-  "livraison",
-  "αποκλειστικη",
-  "εκπτωση",
-  "εκπτωσεις",
-  "κουπονι",
-  "κουπονια",
-  "κωδικος",
-  "κωδικοι",
-  "προσφορα",
-  "προσφορες",
-  "προωθητικος",
-  "акции",
-  "акция",
-  "акція",
-  "акції",
-  "ваучер",
-  "ваучери",
-  "знижка",
-  "знижки",
-  "код",
-  "кодове",
-  "кодови",
-  "коди",
-  "коды",
-  "купон",
-  "купони",
-  "купоны",
-  "отстъпка",
-  "отстъпки",
-  "попуст",
-  "попусти",
-  "предложение",
-  "промо",
-  "промокод",
-  "промокоди",
-  "промокоды",
-  "пропозиція",
-  "скидка",
-  "скидки",
-  "оферта",
-  "оферти",
-  "كود",
-  "اكواد",
-  "كودخصم",
-  "خصم",
-  "خصومات",
-  "كوبون",
-  "كوبونات",
-  "عرض",
-  "عروض",
-  "ترويجي",
-  "קוד",
-  "קודים",
-  "קופון",
-  "קופונים",
-  "הנחה",
-  "הנחות",
-  "מבצע",
-  "מבצעים",
-  "کوڈ",
-  "کوپن",
-  "ڈسکاؤنٹ",
-  "رعایت",
-  "آفر",
-  "آفرز",
-  "پرومو",
-  "فری",
-  "شپنگ",
-  "مفت",
-  "कोड",
-  "कूपन",
-  "छूट",
-  "डिस्काउंट",
-  "ऑफर",
-  "प्रोमो",
-  "मुफ्त",
-  "शिपिंग",
-  "কোড",
-  "কুপন",
-  "ছাড়",
-  "ছাড়",
-  "ডিসকাউন্ট",
-  "অফার",
-  "প্রোমো",
-  "ফ্রি",
-  "শিপিং",
-  "குறியீடு",
-  "கூப்பன்",
-  "தள்ளுபடி",
-  "சலுகை",
-  "ஆஃபர்",
-  "ப்ரோமோ",
-  "இலவசம்",
-  "కోడ్",
-  "కూపన్",
-  "తగ్గింపు",
-  "ఆఫర్",
-  "ప్రమో",
-  "ఉచిత",
-  "โค้ด",
-  "คูปอง",
-  "ส่วนลด",
-  "โปรโมชั่น",
-  "ข้อเสนอ",
-  "ฟรี",
-  "จัดส่ง",
-  "クーポン",
-  "割引",
-  "コード",
-  "プロモ",
-  "プロモーション",
-  "セール",
-  "オファー",
-  "送料無料",
-  "쿠폰",
-  "할인",
-  "코드",
-  "프로모",
-  "프로모션",
-  "행사",
-  "무료배송",
-  "优惠券",
-  "优惠码",
-  "折扣",
-  "促销",
-  "优惠",
-  "代码",
-  "免费送货",
-  "免运费",
-  "包邮",
-  "優惠券",
-  "優惠碼",
-  "折扣",
-  "促銷",
-  "優惠",
-  "代碼",
-  "免費送貨",
-  "免運費",
-  "包郵",
-].map(normalizeModifierToken));
-
-const ATTACHED_MODIFIER_WORDS = [...MODIFIER_WORDS]
-  .filter((word) => /[^\u0000-\u007f]/.test(word))
-  .sort((a, b) => b.length - a.length);
-
-function normalize(value) {
-  return String(value || "").trim().replace(/\s+/g, " ");
-}
-
-function titleCase(value) {
-  return normalize(value)
-    .toLowerCase()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-}
-
-function normalizeModifierToken(value) {
-  return String(value || "")
-    .toLowerCase()
-    .replace(/đ/g, "d")
-    .replace(/ı/g, "i")
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^\p{L}\p{N}]+/gu, "");
-}
-
-function stripAttachedModifiers(token) {
-  let current = token;
-  let changed = true;
-  while (changed) {
-    changed = false;
-    for (const modifier of ATTACHED_MODIFIER_WORDS) {
-      if (current.length <= modifier.length) continue;
-      if (current.startsWith(modifier)) {
-        current = current.slice(modifier.length);
-        changed = true;
-        break;
-      }
-      if (current.endsWith(modifier)) {
-        current = current.slice(0, -modifier.length);
-        changed = true;
-        break;
-      }
-    }
-  }
-  return current;
-}
-
-function brandWord(word) {
-  const token = normalizeModifierToken(word);
-  if (!token || MODIFIER_WORDS.has(token)) return "";
-  const stripped = stripAttachedModifiers(token);
-  return stripped && stripped !== token ? stripped : word;
-}
-
-function brandTokenPart(word) {
-  const token = normalizeModifierToken(word);
-  if (!token || MODIFIER_WORDS.has(token)) return null;
-
-  const stripped = stripAttachedModifiers(token);
-  const key = stripped && stripped !== token ? stripped : token;
-  if (!key || MODIFIER_WORDS.has(key) || key.length < 2) return null;
-
-  return {
-    key,
-    label: stripped && stripped !== token ? stripped : word,
-  };
-}
-
-function buildBrandTokenStats(keywords) {
-  const stats = new Map();
-
-  keywords.forEach((keyword) => {
-    const uniqueTokens = new Set();
-    normalize(keyword)
-      .split(" ")
-      .map(brandTokenPart)
-      .filter(Boolean)
-      .forEach((part) => uniqueTokens.add(part.key));
-
-    uniqueTokens.forEach((token) => {
-      stats.set(token, (stats.get(token) || 0) + 1);
-    });
-  });
-
-  return stats;
-}
-
-function inferGroup(keyword, tokenStats = null) {
-  const cleaned = normalize(keyword);
-  const parts = cleaned
-    .split(" ")
-    .map((word) => {
-      const part = brandTokenPart(word);
-      return part ? { ...part, fallbackLabel: brandWord(word) } : null;
-    })
-    .filter(Boolean);
-
-  const counts = parts.map((part) => tokenStats?.get(part.key) || 0);
-  const maxCount = Math.max(...counts, 0);
-  const selectedParts = maxCount > 1 ? parts.filter((part) => (tokenStats?.get(part.key) || 0) === maxCount) : parts;
-
-  const base = selectedParts
-    .map((part) => part.label || part.fallbackLabel)
-    .join(" ")
-    .trim();
-  return base || cleaned;
-}
-
-function buildKeywordGroupLookup(keywords) {
-  const tokenStats = buildBrandTokenStats(keywords);
-  const keywordToGroup = new Map();
-
-  keywords.forEach((keyword) => {
-    keywordToGroup.set(normalize(keyword).toLowerCase(), inferGroup(keyword, tokenStats));
-  });
-
-  return { keywordToGroup, tokenStats };
-}
-
 function parseKeywords(value) {
   const seen = new Set();
   return String(value || "")
     .split(/[\n,]+/)
-    .map(normalize)
+    .map(normalizeKeyword)
     .filter(Boolean)
     .filter((keyword) => {
       const key = keyword.toLowerCase();
@@ -777,10 +249,9 @@ export default function KeywordExplorer() {
       if (!response.ok) throw new Error(data.error || "Unable to fetch Google Ads metrics.");
 
       const rows = data.results || [];
-      const groupLookup = buildKeywordGroupLookup(parsed);
       setRequestedKeywords(parsed);
       setResults(rows);
-      setSelectedGroupKey((groupLookup.keywordToGroup.get(normalize(parsed[0]).toLowerCase()) || inferGroup(parsed[0])).toLowerCase());
+      setSelectedGroupKey(groupKey(deriveGroupName(parsed[0]) || normalizeKeyword(parsed[0])));
       setSelectedKeyword(rows[0]?.keyword || "");
       if (!rows.length) setError("Google returned no historical metrics for these keywords.");
     } catch (err) {
@@ -791,32 +262,18 @@ export default function KeywordExplorer() {
   }
 
   const groups = useMemo(() => {
-    const groupMap = new Map();
-    const keywordToGroup = new Map();
-    const groupLookup = buildKeywordGroupLookup(requestedKeywords);
-
-    requestedKeywords.forEach((keyword) => {
-      const name = groupLookup.keywordToGroup.get(normalize(keyword).toLowerCase()) || inferGroup(keyword, groupLookup.tokenStats);
-      const key = name.toLowerCase();
-      keywordToGroup.set(normalize(keyword).toLowerCase(), key);
-      if (!groupMap.has(key)) groupMap.set(key, { key, name: titleCase(name), requestedKeywords: [], results: [] });
-      groupMap.get(key).requestedKeywords.push(keyword);
-    });
+    const { groups: requestedGroups, keywordToGroupKey } = buildRequestedGroups(requestedKeywords);
+    const groupMap = new Map(requestedGroups.map((group) => [group.key, { ...group, results: [] }]));
 
     results.forEach((result) => {
-      const resultKey = normalize(result.keyword).toLowerCase();
-      let groupKey = keywordToGroup.get(resultKey);
+      const key = resolveResultGroupKey(result, keywordToGroupKey);
 
-      if (!groupKey) {
-        const variant = (Array.isArray(result.closeVariants) ? result.closeVariants : [])
-          .map((item) => normalize(item).toLowerCase())
-          .find((item) => keywordToGroup.has(item));
-        if (variant) groupKey = keywordToGroup.get(variant);
+      if (!groupMap.has(key)) {
+        const name = deriveGroupName(result.keyword) || normalizeKeyword(result.keyword);
+        groupMap.set(key, { key, name, requestedKeywords: [], results: [] });
       }
 
-      if (!groupKey) groupKey = inferGroup(result.keyword, groupLookup.tokenStats).toLowerCase();
-      if (!groupMap.has(groupKey)) groupMap.set(groupKey, { key: groupKey, name: titleCase(inferGroup(result.keyword, groupLookup.tokenStats)), requestedKeywords: [], results: [] });
-      groupMap.get(groupKey).results.push(result);
+      groupMap.get(key).results.push(result);
     });
 
     return [...groupMap.values()]
@@ -839,8 +296,8 @@ export default function KeywordExplorer() {
     const rows = [["Group", "Row type", "Keyword", "Returned keyword", "Average monthly traffic", "Competition", "Competition index", "Average CPC", "Low top bid", "High top bid", "Country", "Language"]];
     groups.forEach((group) => {
       group.requestedKeywords.forEach((keyword) => {
-        const requested = normalize(keyword).toLowerCase();
-        const result = group.results.find((row) => normalize(row.keyword).toLowerCase() === requested || (row.closeVariants || []).some((variant) => normalize(variant).toLowerCase() === requested));
+        const requested = normalizeKeyword(keyword).toLowerCase();
+        const result = group.results.find((row) => normalizeKeyword(row.keyword).toLowerCase() === requested || (row.closeVariants || []).some((variant) => normalizeKeyword(variant).toLowerCase() === requested));
         rows.push([group.name, "KEYWORD", keyword, result?.keyword || "", result?.averageMonthlySearches ?? "", result?.competition || "", result?.competitionIndex ?? "", result?.averageCpc ?? "", result?.lowTopOfPageBid ?? "", result?.highTopOfPageBid ?? "", country, language]);
       });
       rows.push([group.name, "GROUP TOTAL", "", "", group.totalVolume, "", "", "", "", "", country, language]);
